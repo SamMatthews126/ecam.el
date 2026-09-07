@@ -14,30 +14,22 @@
 
 (require 'emms)
 
-(defgroup ecam nil
-  "Display album covers in the EMMS modeline."
-  :group 'emms)
-
 (defcustom ecam-size 24
   "Size of album cover in pixels (width and height)."
-  :type 'integer
-  :group 'ecam)
+  :type 'integer)
 
 (defcustom ecam-search-paths
   '("cover.jpg" "cover.png" "folder.jpg" "Folder.jpg" "album.jpg" "front.jpg")
   "List of filenames to search for as album covers in track directories."
-  :type '(repeat string)
-  :group 'ecam)
+  :type '(repeat string))
 
 (defcustom ecam-image-type 'jpeg
   "Image type to use for album covers (jpeg or png)."
-  :type '(choice (const jpeg) (const png))
-  :group 'ecam)
+  :type '(choice (const jpeg) (const png)))
 
 (defcustom ecam-enable t
   "Whether to display album covers in the modeline."
-  :type 'boolean
-  :group 'ecam)
+  :type 'boolean)
 
 (defvar ecam-image nil
   "Current album cover image for modeline display.")
@@ -88,7 +80,6 @@ This mode hooks into EMMS events to update the cover display
 as tracks change. The cover is displayed via the modeline
 format string when using doom-modeline or custom EMMS modeline configs."
   :global t
-  :group 'ecam
   (if ecam-mode
       (progn
         (add-hook 'emms-player-started-hook #'ecam-update)
