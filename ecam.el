@@ -8,6 +8,7 @@
 
 ;;; Commentary:
 ;; Display album cover art in the EMMS modeline format string.
+;; Only supports jpg/jpeg
 
 ;;; Code:
 
@@ -20,28 +21,24 @@
   :type 'integer)
 
 (defcustom ecam-search-paths
-  '("cover.jpg" "cover.png" "folder.jpg" "Folder.jpg" "album.jpg" "front.jpg")
+  '("cover.jpg" "folder.jpg" "Folder.jpg" "album.jpg" "front.jpg"
+    "cover.jpeg" "folder.jpeg" "Folder.jpeg" "album.jpeg" "front.jpeg")
   "List of filenames to search for as album covers in track directories."
   :type '(repeat string))
-
-(defcustom ecam-image-type 'jpeg
-  "Image type to use for album covers (jpeg or png)."
-  :type '(choice (const jpeg) (const png)))
-
-(defcustom ecam-enable t
-  "Whether to display album covers in the modeline."
-  :type 'boolean)
 
 (defvar ecam-image nil
   "Current album cover image for modeline display.")
 
 ;;; Core Functions
 
+(setq ecam-image-type 'jpeg)
+
 (defun ecam-get-path ()
   "Get the path to the album cover for the current track."
   (when (emms-playlist-current-selected-track)
-    (let* ((track (emms-playlist-current-selected-track))
-           (file (emms-track-get track 'name)))
+    (let* (
+	    (track (emms-playlist-current-selected-track))
+      (file (emms-track-get track 'name)))
       (when file
         (let ((dir (file-name-directory file)))
           (catch 'found
@@ -55,25 +52,26 @@
 IMAGE-PATH is the path to the image file.
 SIZE is the width and height in pixels."
   (when (file-exists-p image-path)
-    (create-image image-path ecam-image-type nil
-                  :width size
-                  :height size
-                  :scale 1
-									:ascent 'center)))
+    (create-image
+		  image-path
+			ecam-image-type
+			nil
+      :width size
+      :height size
+      :scale 1
+			:ascent 'center)))
 
 (defun ecam-update ()
   "Update the album cover image for the modeline."
-  (when ecam-enable
-    (let ((cover-path (ecam-get-path)))
-      (if cover-path
-          (setq ecam-image
-                (ecam-scale-image cover-path ecam-size))
-        (setq ecam-image nil))))
+  (let ((cover-path (ecam-get-path)))
+    (if cover-path
+      (setq ecam-image (ecam-scale-image cover-path ecam-size))
+      (setq ecam-image nil)))
   (force-mode-line-update))
 
 (defun ecam-propertized ()
   "Return a propertized string with the album cover image for use in format strings."
-  (when (and ecam-enable ecam-image)
+  (when ecam-image
     (propertize " " 'display ecam-image)))
 
 ;;; Interactive Commands
@@ -86,13 +84,13 @@ as tracks change. The cover is displayed via the modeline
 format string when using custom EMMS modeline config."
   :global t
   (if ecam-mode
-      (progn
-        (add-hook 'emms-player-started-hook #'ecam-update)
-        (add-hook 'emms-player-next-hook #'ecam-update)
-        (add-hook 'emms-player-previous-hook #'ecam-update)
-        (add-hook 'emms-player-stopped-hook #'ecam-update)
-        (ecam-update)
-        (message "Ecam enabled"))
+		(progn
+      (add-hook 'emms-player-started-hook #'ecam-update)
+      (add-hook 'emms-player-next-hook #'ecam-update)
+      (add-hook 'emms-player-previous-hook #'ecam-update)
+      (add-hook 'emms-player-stopped-hook #'ecam-update)
+      (ecam-update)
+      (message "Ecam enabled"))
     (progn
       (remove-hook 'emms-player-started-hook #'ecam-update)
       (remove-hook 'emms-player-next-hook #'ecam-update)
