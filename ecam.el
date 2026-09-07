@@ -8,7 +8,6 @@
 
 ;;; Commentary:
 ;; Display album cover art in the EMMS modeline format string.
-;; Integrates with doom-modeline's emms segment.
 
 ;;; Code:
 
@@ -84,7 +83,7 @@ SIZE is the width and height in pixels."
   "Display album covers in the EMMS modeline.
 This mode hooks into EMMS events to update the cover display
 as tracks change. The cover is displayed via the modeline
-format string when using doom-modeline or custom EMMS modeline configs."
+format string when using custom EMMS modeline config."
   :global t
   (if ecam-mode
       (progn
@@ -112,12 +111,6 @@ format string when using doom-modeline or custom EMMS modeline configs."
       cover
       " "
       "]")))
-
-;; Doom Modeline integration
-(with-eval-after-load 'doom-modeline
-  (doom-modeline-def-segment ecam-doom
-    "Album cover display for EMMS."
-    (ecam-propertized)))
 
 (provide 'ecam)
 
