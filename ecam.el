@@ -1,10 +1,10 @@
 ;;; ecam.el --- Emms Cover Art Modeline -*- lexical-binding: t; -*-
 
+;; Copyright (C) 2026
 ;; Author: Sam Matthews
 ;; Version: 1.0
-;; Package-Requires: ((emacs "30"))
+;; Package-Requires: ((emacs "30") (emms))
 ;; Keywords: emms music modeline
-;; URL: https://github.com/SamMatthews126/ecam
 
 ;;; Commentary:
 ;; Display album cover art in the EMMS modeline format string.
@@ -13,6 +13,8 @@
 ;;; Code:
 
 (require 'emms)
+
+;;; User Options
 
 (defcustom ecam-size 24
   "Size of album cover in pixels (width and height)."
@@ -33,6 +35,8 @@
 
 (defvar ecam-image nil
   "Current album cover image for modeline display.")
+
+;;; Core Functions
 
 (defun ecam-get-path ()
   "Get the path to the album cover for the current track."
@@ -72,6 +76,8 @@ SIZE is the width and height in pixels."
   "Return a propertized string with the album cover image for use in format strings."
   (when (and ecam-enable ecam-image)
     (propertize " " 'display ecam-image)))
+
+;;; Interactive Commands
 
 ;;;###autoload
 (define-minor-mode ecam-mode
