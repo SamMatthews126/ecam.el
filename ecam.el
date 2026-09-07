@@ -114,8 +114,8 @@ format string when using doom-modeline or custom EMMS modeline configs."
       "]")))
 
 ;; Doom Modeline integration
-(when (featurep 'doom-modeline)
-  (doom-modeline-def-segment ecam
+(with-eval-after-load 'doom-modeline
+  (doom-modeline-def-segment ecam-doom
     "Album cover display for EMMS."
     (ecam-propertized)))
 
